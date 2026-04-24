@@ -1,0 +1,385 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:wght@400;500&display=swap');
+  .sq-wrap { font-family: 'DM Sans', sans-serif; max-width: 380px; margin: 0 auto; padding: 12px 0; }
+  .sq-phone { background: #1a1a2e; border-radius: 24px; overflow: hidden; border: 2px solid #0f3460; }
+  .sq-statusbar { background: #1a1a2e; padding: 8px 16px 4px; display:flex; justify-content: space-between; font-size: 11px; color: #a0a0b0; }
+  .sq-screen { background: #1a1a2e; min-height: 560px; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .sq-header { background: #16213e; padding: 14px 16px 12px; display:flex; align-items:center; gap:10px; }
+  .sq-logo { font-family: 'Syne', sans-serif; color: #e94560; font-weight: 700; font-size: 18px; }
+  .sq-venue { font-size: 12px; color: #a0a0b0; margin-top: 1px; }
+  .sq-now-playing { background: #0f3460; margin: 12px; border-radius: 12px; padding: 12px; display:flex; align-items:center; gap:10px; }
+  .sq-now-art { width: 44px; height: 44px; border-radius: 8px; background: linear-gradient(135deg,#e94560,#0f3460); display:flex; align-items:center; justify-content:center; font-size: 18px; flex-shrink:0; }
+  .sq-now-info { flex:1; min-width:0; }
+  .sq-now-title { font-family: 'Syne', sans-serif; color: #fff; font-size: 13px; font-weight: 700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sq-now-artist { color: #a0a0b0; font-size: 11px; margin-top:2px; }
+  .sq-progress { background: #1a1a2e; border-radius: 4px; height: 3px; margin-top: 8px; overflow:hidden; }
+  .sq-progress-fill { height: 100%; background: #e94560; border-radius: 4px; width: 38%; }
+  .sq-badge { background: #00d4aa; color: #04342c; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 20px; white-space:nowrap; }
+  .sq-section-title { font-family: 'Syne', sans-serif; color: #a0a0b0; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 14px 6px; }
+  .sq-queue-item { display:flex; align-items:center; gap:10px; padding: 8px 14px; border-bottom: 1px solid #16213e; cursor:pointer; transition: background 0.2s; }
+  .sq-queue-item:hover { background: #16213e; }
+  .sq-queue-pos { color: #e94560; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; width: 18px; text-align:center; flex-shrink:0; }
+  .sq-queue-art { width: 36px; height: 36px; border-radius: 6px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .sq-queue-info { flex:1; min-width:0; }
+  .sq-queue-title { color: #fff; font-size: 12px; font-weight: 500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sq-queue-artist { color: #a0a0b0; font-size: 10px; margin-top: 1px; }
+  .sq-queue-votes { display:flex; align-items:center; gap:4px; }
+  .sq-vote-btn { background: #16213e; border: 1px solid #0f3460; border-radius: 20px; padding: 3px 8px; color: #e94560; font-size: 10px; font-weight: 700; cursor:pointer; white-space:nowrap; transition: all 0.15s; }
+  .sq-vote-btn:hover { background: #e94560; color: #fff; border-color: #e94560; }
+  .sq-vote-count { color: #a0a0b0; font-size: 10px; }
+  .sq-nav { background: #16213e; display:flex; border-top: 1px solid #0f3460; }
+  .sq-nav-btn { flex:1; padding: 10px 4px 8px; text-align:center; cursor:pointer; border:none; background:transparent; color:#a0a0b0; font-size: 9px; font-family: 'DM Sans', sans-serif; transition: color 0.2s; }
+  .sq-nav-btn.on { color: #e94560; }
+  .sq-nav-icon { font-size: 16px; display:block; margin-bottom: 2px; }
+
+  .sq-search-box { margin: 10px 12px; position: relative; }
+  .sq-search-input { width: 100%; box-sizing:border-box; background: #16213e; border: 1px solid #0f3460; border-radius: 10px; padding: 9px 14px; color: #fff; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; }
+  .sq-search-input::placeholder { color: #666; }
+  .sq-result { display:flex; align-items:center; gap:10px; padding: 8px 14px; border-bottom: 1px solid #16213e; cursor:pointer; transition: background 0.2s; }
+  .sq-result:hover { background: #16213e; }
+  .sq-result-art { width: 38px; height: 38px; border-radius: 6px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .sq-result-info { flex:1; min-width:0; }
+  .sq-result-title { color: #fff; font-size: 12px; font-weight: 500; }
+  .sq-result-meta { color: #a0a0b0; font-size: 10px; margin-top: 1px; }
+  .sq-add-btn { background: #e94560; border: none; border-radius: 20px; padding: 4px 10px; color: #fff; font-size: 10px; font-weight: 700; cursor:pointer; flex-shrink:0; white-space:nowrap; }
+  .sq-add-btn.blocked { background: #333; color: #666; cursor: not-allowed; }
+  .sq-add-btn.in-queue { background: transparent; border: 1px solid #e94560; color: #e94560; }
+
+  .sq-success { text-align:center; padding: 40px 20px 20px; }
+  .sq-success-icon { font-size: 48px; margin-bottom: 12px; display:block; }
+  .sq-success-title { font-family: 'Syne', sans-serif; color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .sq-success-sub { color: #a0a0b0; font-size: 12px; line-height: 1.5; }
+  .sq-success-card { background: #16213e; border: 1px solid #0f3460; border-radius: 12px; padding: 12px 16px; margin: 16px 0; text-align:left; }
+  .sq-back-btn { background: #e94560; border: none; border-radius: 10px; width: 100%; padding: 12px; color: #fff; font-size: 13px; font-weight: 700; cursor:pointer; font-family: 'DM Sans', sans-serif; margin-top: 8px; }
+
+  .sq-admin { padding: 0; }
+  .sq-admin-header { background: #0f3460; padding: 10px 14px; display:flex; align-items:center; gap:8px; }
+  .sq-admin-title { font-family: 'Syne', sans-serif; color: #fff; font-size: 13px; font-weight: 700; }
+  .sq-admin-badge { background: #e94560; color: #fff; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 10px; margin-left: auto; }
+  .sq-stats { display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; padding: 10px 12px; }
+  .sq-stat { background: #16213e; border-radius: 8px; padding: 8px; text-align:center; }
+  .sq-stat-num { font-family: 'Syne', sans-serif; color: #e94560; font-size: 20px; font-weight: 700; }
+  .sq-stat-label { color: #a0a0b0; font-size: 9px; margin-top: 2px; }
+  .sq-admin-item { display:flex; align-items:center; gap:8px; padding: 7px 12px; border-bottom: 1px solid #16213e; }
+  .sq-admin-art { width: 32px; height: 32px; border-radius: 5px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+  .sq-admin-info { flex:1; min-width:0; }
+  .sq-admin-title2 { color: #fff; font-size: 11px; font-weight: 500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sq-admin-meta { color: #a0a0b0; font-size: 9px; }
+  .sq-admin-actions { display:flex; gap:4px; }
+  .sq-ok-btn { background: #00d4aa; border:none; border-radius: 6px; padding: 4px 8px; color: #04342c; font-size: 10px; font-weight: 700; cursor:pointer; }
+  .sq-no-btn { background: #e94560; border:none; border-radius: 6px; padding: 4px 8px; color: #fff; font-size: 10px; font-weight: 700; cursor:pointer; }
+  .sq-mesa-tag { background: #0f3460; color: #a0a0b0; font-size: 9px; padding: 2px 5px; border-radius: 4px; }
+
+  .tab-labels { display:flex; gap: 6px; padding: 8px 12px 4px; }
+  .tab-label { font-size: 11px; padding: 4px 10px; border-radius: 20px; cursor:pointer; color: #a0a0b0; background: transparent; border: 1px solid #0f3460; transition: all 0.2s; }
+  .tab-label.on { background: #e94560; color: #fff; border-color: #e94560; }
+</style>
+
+<div class="sq-wrap">
+  <h2 class="sr-only">Prototipo interactivo de SoundQR — app de peticiones musicales por QR</h2>
+  <div style="text-align:center; margin-bottom: 10px;">
+    <span style="font-family:'Syne',sans-serif; color: var(--color-text-primary); font-size:14px; font-weight:700;">SoundQR</span>
+    <span style="color: var(--color-text-secondary); font-size: 12px;"> — prototipo interactivo</span>
+  </div>
+
+  <div class="tab-labels" id="mainTabs">
+    <div class="tab-label on" onclick="showView('client')">Cliente</div>
+    <div class="tab-label" onclick="showView('admin')">DJ / Admin</div>
+  </div>
+
+  <div class="sq-phone" id="clientView">
+    <div class="sq-statusbar"><span>9:41</span><span>■■■ ▲</span></div>
+    <div class="sq-screen">
+
+      <div class="screen active" id="sc-home">
+        <div class="sq-header">
+          <div>
+            <div class="sq-logo">SoundQR</div>
+            <div class="sq-venue">Bar La Rumba — Mesa 7</div>
+          </div>
+          <div style="margin-left:auto; text-align:right;">
+            <div style="color:#fff; font-size:12px; font-weight:500;">3 peticiones</div>
+            <div style="color:#a0a0b0; font-size:10px;">restantes hoy</div>
+          </div>
+        </div>
+
+        <div class="sq-now-playing">
+          <div class="sq-now-art">🎵</div>
+          <div class="sq-now-info">
+            <div class="sq-now-title">Tusa — KAROL G, Nicki Minaj</div>
+            <div class="sq-now-artist">Sonando ahora</div>
+            <div class="sq-progress"><div class="sq-progress-fill"></div></div>
+          </div>
+          <div class="sq-badge">LIVE</div>
+        </div>
+
+        <div class="sq-section-title">Cola de reproducción (5)</div>
+
+        <div class="sq-queue-item">
+          <div class="sq-queue-pos">1</div>
+          <div class="sq-queue-art" style="background:#1e1a3a;">🔥</div>
+          <div class="sq-queue-info">
+            <div class="sq-queue-title">Con Calma — Daddy Yankee</div>
+            <div class="sq-queue-artist">Reggaeton · ~3 min</div>
+          </div>
+          <div class="sq-queue-votes"><div class="sq-vote-count">4 votos</div></div>
+        </div>
+        <div class="sq-queue-item">
+          <div class="sq-queue-pos">2</div>
+          <div class="sq-queue-art" style="background:#1a2e1e;">🎸</div>
+          <div class="sq-queue-info">
+            <div class="sq-queue-title">Hawái — Maluma</div>
+            <div class="sq-queue-artist">Pop latino · ~5 min</div>
+          </div>
+          <div class="sq-queue-votes"><div class="sq-vote-count">3 votos</div></div>
+        </div>
+        <div class="sq-queue-item" style="border-left: 3px solid #e94560;">
+          <div class="sq-queue-pos">3</div>
+          <div class="sq-queue-art" style="background:#2e1a1a;">💃</div>
+          <div class="sq-queue-info">
+            <div class="sq-queue-title">La Bachata — Manuel Turizo</div>
+            <div class="sq-queue-artist">Bachata · ~7 min</div>
+          </div>
+          <div class="sq-queue-votes">
+            <div style="color:#e94560; font-size:9px; font-weight:700;">TU CANCIÓN</div>
+          </div>
+        </div>
+        <div class="sq-queue-item">
+          <div class="sq-queue-pos">4</div>
+          <div class="sq-queue-art" style="background:#1a2a2e;">🌊</div>
+          <div class="sq-queue-info">
+            <div class="sq-queue-title">Shakira: Bzrp Music Sessions #53</div>
+            <div class="sq-queue-artist">Pop · ~9 min</div>
+          </div>
+          <div class="sq-queue-votes">
+            <button class="sq-vote-btn" onclick="addVote(this)">+1 voto</button>
+          </div>
+        </div>
+
+        <div style="padding: 12px 14px;">
+          <button style="width:100%; background:#e94560; border:none; border-radius:12px; padding:13px; color:#fff; font-size:14px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif;" onclick="goScreen('sc-search')">
+            + Pedir una canción
+          </button>
+        </div>
+      </div>
+
+      <div class="screen" id="sc-search">
+        <div class="sq-header">
+          <button onclick="goScreen('sc-home')" style="background:transparent;border:none;color:#a0a0b0;cursor:pointer;font-size:18px;padding:0;">←</button>
+          <div>
+            <div class="sq-logo" style="font-size:15px;">Buscar canción</div>
+            <div class="sq-venue">Bar La Rumba — Mesa 7</div>
+          </div>
+        </div>
+        <div class="sq-search-box">
+          <input class="sq-search-input" placeholder="Artista, canción, género..." oninput="filterResults(this.value)" />
+        </div>
+        <div class="sq-section-title">Resultados</div>
+        <div id="results-list">
+          <div class="sq-result">
+            <div class="sq-result-art" style="background:#2e1a2a;">💜</div>
+            <div class="sq-result-info">
+              <div class="sq-result-title">Mercho — Feid</div>
+              <div class="sq-result-meta">Urbano · 3:24</div>
+            </div>
+            <button class="sq-add-btn" onclick="addSong(this)">+ Pedir</button>
+          </div>
+          <div class="sq-result">
+            <div class="sq-result-art" style="background:#1a2e1a;">🟢</div>
+            <div class="sq-result-info">
+              <div class="sq-result-title">Provenza — KAROL G</div>
+              <div class="sq-result-meta">Reggaeton · 3:51</div>
+            </div>
+            <button class="sq-add-btn in-queue">En cola (2)</button>
+          </div>
+          <div class="sq-result" style="opacity:0.5;">
+            <div class="sq-result-art" style="background:#2e2a1a;">🚫</div>
+            <div class="sq-result-info">
+              <div class="sq-result-title">Canción restringida</div>
+              <div class="sq-result-meta">Bloqueada por el admin</div>
+            </div>
+            <button class="sq-add-btn blocked">No disp.</button>
+          </div>
+          <div class="sq-result">
+            <div class="sq-result-art" style="background:#1a1a2e;">🎤</div>
+            <div class="sq-result-info">
+              <div class="sq-result-title">Si Antes Te Hubiera Conocido — KAROL G</div>
+              <div class="sq-result-meta">Pop latino · 3:10</div>
+            </div>
+            <button class="sq-add-btn" onclick="addSong(this)">+ Pedir</button>
+          </div>
+          <div class="sq-result">
+            <div class="sq-result-art" style="background:#2e1a1a;">❤️</div>
+            <div class="sq-result-info">
+              <div class="sq-result-title">La Fórmula — Maluma, Marc Anthony</div>
+              <div class="sq-result-meta">Salsa urbana · 4:02</div>
+            </div>
+            <button class="sq-add-btn" onclick="addSong(this)">+ Pedir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen" id="sc-success">
+        <div class="sq-success">
+          <span class="sq-success-icon">🎉</span>
+          <div class="sq-success-title">¡Canción pedida!</div>
+          <div class="sq-success-sub">Tu canción fue agregada a la cola exitosamente.</div>
+          <div class="sq-success-card">
+            <div style="color:#a0a0b0; font-size:10px; margin-bottom:4px;">POSICIÓN EN COLA</div>
+            <div style="font-family:'Syne',sans-serif; color:#e94560; font-size:24px; font-weight:700;">#4</div>
+            <div style="color:#fff; font-size:12px; margin-top:6px;">Tiempo estimado de espera</div>
+            <div style="color:#a0a0b0; font-size:11px;">~ 12 minutos</div>
+          </div>
+          <button class="sq-back-btn" onclick="goScreen('sc-home')">Ver la cola completa</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="sq-nav">
+      <button class="sq-nav-btn on" onclick="goScreen('sc-home')"><span class="sq-nav-icon">♪</span>Cola</button>
+      <button class="sq-nav-btn" onclick="goScreen('sc-search')"><span class="sq-nav-icon">⊕</span>Pedir</button>
+      <button class="sq-nav-btn"><span class="sq-nav-icon">☆</span>Mesa</button>
+    </div>
+  </div>
+
+  <div class="sq-phone" id="adminView" style="display:none;">
+    <div class="sq-statusbar"><span>9:41</span><span>■■■ ▲</span></div>
+    <div class="sq-screen">
+      <div class="sq-admin-header">
+        <div>
+          <div class="sq-admin-title">Panel DJ — Bar La Rumba</div>
+          <div style="color:#a0a0b0; font-size:10px; margin-top:1px;">Modo: Moderación activa</div>
+        </div>
+        <div class="sq-admin-badge">3 pendientes</div>
+      </div>
+
+      <div class="sq-stats">
+        <div class="sq-stat"><div class="sq-stat-num">24</div><div class="sq-stat-label">Peticiones hoy</div></div>
+        <div class="sq-stat"><div class="sq-stat-num">8</div><div class="sq-stat-label">Mesas activas</div></div>
+        <div class="sq-stat"><div class="sq-stat-num">5</div><div class="sq-stat-label">En cola</div></div>
+      </div>
+
+      <div class="sq-section-title" style="padding-top:8px;">Pendientes de aprobación</div>
+      <div id="pendingList">
+        <div class="sq-admin-item">
+          <div class="sq-admin-art" style="background:#2e1a2a;">🎵</div>
+          <div class="sq-admin-info">
+            <div class="sq-admin-title2">Pepas — Farruko</div>
+            <div class="sq-admin-meta"><span class="sq-mesa-tag">Mesa 3</span> · Hace 1 min</div>
+          </div>
+          <div class="sq-admin-actions">
+            <button class="sq-ok-btn" onclick="approveItem(this)">✓</button>
+            <button class="sq-no-btn" onclick="rejectItem(this)">✕</button>
+          </div>
+        </div>
+        <div class="sq-admin-item">
+          <div class="sq-admin-art" style="background:#1a1a2e;">🎤</div>
+          <div class="sq-admin-info">
+            <div class="sq-admin-title2">Ojitos Lindos — Bad Bunny, Bomba Estéreo</div>
+            <div class="sq-admin-meta"><span class="sq-mesa-tag">Mesa 1</span> · Hace 2 min · <span style="color:#e94560;">2 votos</span></div>
+          </div>
+          <div class="sq-admin-actions">
+            <button class="sq-ok-btn" onclick="approveItem(this)">✓</button>
+            <button class="sq-no-btn" onclick="rejectItem(this)">✕</button>
+          </div>
+        </div>
+        <div class="sq-admin-item">
+          <div class="sq-admin-art" style="background:#1a2e1a;">🌟</div>
+          <div class="sq-admin-info">
+            <div class="sq-admin-title2">Dákiti — Bad Bunny, Jhay Cortez</div>
+            <div class="sq-admin-meta"><span class="sq-mesa-tag">Mesa 5</span> · Hace 3 min</div>
+          </div>
+          <div class="sq-admin-actions">
+            <button class="sq-ok-btn" onclick="approveItem(this)">✓</button>
+            <button class="sq-no-btn" onclick="rejectItem(this)">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sq-section-title" style="padding-top:8px;">Cola aprobada</div>
+      <div class="sq-admin-item">
+        <div style="width:10px; height:10px; border-radius:50%; background:#00d4aa; flex-shrink:0; margin-right:2px;"></div>
+        <div class="sq-admin-art" style="background:#2e1a1a;">🔥</div>
+        <div class="sq-admin-info">
+          <div class="sq-admin-title2">Con Calma — Daddy Yankee</div>
+          <div class="sq-admin-meta">4 votos · <span style="color:#00d4aa;">Sonando ahora</span></div>
+        </div>
+        <button style="background:transparent;border:1px solid #0f3460;border-radius:6px;padding:3px 6px;color:#a0a0b0;font-size:9px;cursor:pointer;">⇅</button>
+      </div>
+      <div class="sq-admin-item">
+        <div style="width:10px; height:10px; border-radius:50%; background:#a0a0b0; flex-shrink:0; margin-right:2px;"></div>
+        <div class="sq-admin-art" style="background:#1e1a3a;">💜</div>
+        <div class="sq-admin-info">
+          <div class="sq-admin-title2">Hawái — Maluma</div>
+          <div class="sq-admin-meta">3 votos · siguiente</div>
+        </div>
+        <button style="background:transparent;border:1px solid #0f3460;border-radius:6px;padding:3px 6px;color:#a0a0b0;font-size:9px;cursor:pointer;">⇅</button>
+      </div>
+
+      <div style="padding: 10px 12px;">
+        <div style="display:flex; gap:6px;">
+          <button style="flex:1;background:#16213e;border:1px solid #0f3460;border-radius:8px;padding:8px;color:#a0a0b0;font-size:10px;cursor:pointer;" onclick="sendPrompt('¿Qué canciones debería agregar a la lista negra de SoundQR para un bar latino?')">🚫 Lista negra ↗</button>
+          <button style="flex:1;background:#16213e;border:1px solid #0f3460;border-radius:8px;padding:8px;color:#a0a0b0;font-size:10px;cursor:pointer;" onclick="sendPrompt('Explícame cómo funciona el sistema de anti-repetición de SoundQR y cómo configurarlo')">⚙️ Configurar ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 10px; text-align:center; color: var(--color-text-secondary); font-size: 11px; line-height: 1.6;">
+    Toca <strong style="font-weight:500;">+1 voto</strong> o <strong style="font-weight:500;">+ Pedir</strong> para ver la interacción.<br>El panel DJ tiene moderación en vivo (✓ / ✕).
+  </div>
+</div>
+
+<script>
+function showView(v) {
+  document.getElementById('clientView').style.display = v === 'client' ? 'block' : 'none';
+  document.getElementById('adminView').style.display = v === 'admin' ? 'block' : 'none';
+  document.querySelectorAll('.tab-label').forEach((el, i) => {
+    el.classList.toggle('on', (i===0 && v==='client') || (i===1 && v==='admin'));
+  });
+}
+function goScreen(id) {
+  document.querySelectorAll('#clientView .screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function addVote(btn) {
+  btn.textContent = '¡Votado!';
+  btn.style.background = '#e94560';
+  btn.style.color = '#fff';
+  btn.style.borderColor = '#e94560';
+  btn.disabled = true;
+}
+function addSong(btn) {
+  const title = btn.closest('.sq-result').querySelector('.sq-result-title').textContent;
+  goScreen('sc-success');
+}
+function filterResults(q) {
+  const items = document.querySelectorAll('#results-list .sq-result');
+  items.forEach(item => {
+    const text = item.querySelector('.sq-result-title').textContent.toLowerCase();
+    item.style.display = text.includes(q.toLowerCase()) || q === '' ? 'flex' : 'none';
+  });
+}
+function approveItem(btn) {
+  const item = btn.closest('.sq-admin-item');
+  item.style.transition = 'opacity 0.3s';
+  item.style.opacity = '0';
+  setTimeout(() => item.remove(), 300);
+  const badge = document.querySelector('.sq-admin-badge');
+  const n = parseInt(badge.textContent) - 1;
+  badge.textContent = n + ' pendiente' + (n !== 1 ? 's' : '');
+}
+function rejectItem(btn) {
+  const item = btn.closest('.sq-admin-item');
+  item.style.background = '#2e1a1a';
+  item.style.transition = 'opacity 0.3s';
+  setTimeout(() => { item.style.opacity = '0'; }, 100);
+  setTimeout(() => item.remove(), 400);
+  const badge = document.querySelector('.sq-admin-badge');
+  const n = parseInt(badge.textContent) - 1;
+  badge.textContent = n + ' pendiente' + (n !== 1 ? 's' : '');
+}
+</script>
